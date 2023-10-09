@@ -62,7 +62,7 @@ function MyApp() {
     }
 
     function deleteUser(person) {
-        const promise = fetch("Http://localhost:8000/users/" + person["id"], {
+        const promise = fetch(`Http://localhost:8000/users/${person["id"]}`, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
