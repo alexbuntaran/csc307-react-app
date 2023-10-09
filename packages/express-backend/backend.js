@@ -89,24 +89,45 @@ const findUserById = (id) =>
 
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
-    addUser(userToAdd);
-    res.send();
+    const userToSend = addUser(userToAdd);
+    res.status(201).send(userToSend);
 });
 
 const addUser = (user) => {
-    users['users_list'].push(user);
-    return user;
+    const newUser = {
+        id: generateID(),
+        ...user
+    }
+    users['users_list'].push(newUser);
+    return newUser;
 }
+
+const generateID = () => {
+    let id = "";
+    for (let i = 0; i < 3; i++) {
+        id += String.fromCharCode(Math.round(Math.random() * (122 - 97)) + 97);
+    }
+
+    for (let i = 0; i < 3; i++) {
+        id += Math.floor(Math.random() * 10);
+    }
+
+    return id;
+};
 
 app.delete("/users/:id", (req, res) => {
     const id = req.params["id"];
-    deleteUser(id);
-    res.send();
+    if (deleteUser(id) === -1) {
+        res.status(404).send("Resource not found.");
+    } else {
+        res.status(204).send();
+    }
 });
 
 const deleteUser = (id) => {
     const idx = users["users_list"].findIndex((user) => user["id"] === id);
     users["users_list"].splice(idx, 1);
+    return idx;
 }
 
 app.listen(port, () => {
